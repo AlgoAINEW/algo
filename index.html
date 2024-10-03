@@ -21,23 +21,19 @@
 
         .container {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column; /* Change to column for mobile */
+            align-items: center; /* Center items */
             margin: 0;
             padding: 0;
-            height: 50vh;
-            transition: height 0.3s ease;
         }
 
         .chart {
-            width: 49%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
+            width: 90%; /* Use percentage for responsiveness */
+            height: 250px; /* Set a specific height for smaller screens */
+            margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            margin-bottom: 20px; /* Added margin for spacing */
-            background-color: #2a2a2a; /* Dark background for charts */
+            background-color: #2a2a2a;
         }
 
         iframe {
@@ -54,26 +50,25 @@
 
         .stock-notification-container {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column; /* Change to column for mobile */
             margin: 0;
             padding: 0;
-            height: 42vh;
+            width: 90%; /* Use percentage for responsiveness */
         }
 
         .stock-list, .notification-section {
-            width: 49%;
             padding: 20px;
-            background-color: #2a2a2a; /* Dark background for lists */
+            background-color: #2a2a2a;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px; /* Added margin for spacing */
             overflow-y: auto;
-            margin-bottom: 0; /* Remove margin to reduce extra space */
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px; /* Adjusted margin */
+            margin-bottom: 10px;
         }
 
         th, td {
@@ -83,7 +78,7 @@
         }
 
         th {
-            background-color: #61dafb; /* Header background color */
+            background-color: #61dafb;
             color: black;
         }
 
@@ -94,11 +89,6 @@
             background-color: #3a3a3a;
             border-radius: 5px;
             animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .timestamp {
@@ -112,8 +102,8 @@
             padding: 10px;
             border: 1px solid #444;
             border-radius: 5px;
-            background-color: #333; /* Dark input background */
-            color: #eaeaea; /* Input text color */
+            background-color: #333;
+            color: #eaeaea;
             transition: border-color 0.3s;
         }
 
@@ -126,7 +116,7 @@
             width: 100%;
             padding: 10px;
             margin-top: 10px;
-            background-color: #61dafb; /* Button background color */
+            background-color: #61dafb;
             color: black;
             border: none;
             border-radius: 5px;
@@ -162,58 +152,102 @@
         }
 
         .message-input-container {
-            margin-bottom: 10px; /* Added margin for spacing */
+            margin-bottom: 10px;
+        }
+
+        .tradingview-widget-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .tradingview-widget-container__widget {
+            width: 100%;
+            height: 60px;
+            margin: 0 auto;
+        }
+
+        .blue-text {
+            color: #61dafb;
+        }
+
+        /* Media Queries for Mobile */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .chart {
+                width: 90%;
+                height: 200px; /* Adjust height for smaller screens */
+            }
+
+            .stock-notification-container {
+                flex-direction: column;
+                width: 90%;
+            }
+
+            .stock-list, .notification-section {
+                width: 100%; /* Full width on mobile */
+                margin-bottom: 20px;
+            }
+
+            .message {
+                font-size: 0.9em; /* Slightly smaller font size for messages */
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Stock Market Charts -->
     <div class="container">
-        <!-- Stock Market Chart 1 -->
-        <div class="chart">
-            <iframe src="https://ssltvc.investing.com/?pair_ID=17940&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20"></iframe>
-        </div>
-
-        <!-- Stock Market Chart 2 -->
-        <div class="chart">
-            <iframe src="https://ssltvc.investing.com/?pair_ID=8985&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20"></iframe>
-        </div>
-    </div>
-
-    <!-- Stock List and Notification Section -->
-    <div class="stock-notification-container">
-        <!-- Stock List Section -->
-        <div id="stock-list" class="stock-list">
-            <h2>Stock List</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Stock Name</th>
-                        <th>High Level</th>
-                        <th>Low Level</th>
-                    </tr>
-                </thead>
-                <tbody id="stock-data">
-                    <!-- Dynamic stock data will go here -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Notification Section -->
-        <div id="notification-section" class="notification-section">
-            <h2>Live Notifications</h2>
-            <div class="message-input-container">
-                <input type="text" id="messageInput" placeholder="Type a message..." style="display:none;">
-                <button id="sendButton" style="display:none;">Send</button>
+        <!-- Stock Market Charts -->
+        <div style="display: flex; justify-content: space-between; margin: 0; padding: 0; height: 50vh;">
+            <!-- Stock Market Chart 1 -->
+            <div class="chart">
+                <iframe frameborder="0" scrolling="no" src="https://ssltvc.investing.com/?pair_ID=17940&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20"></iframe>
             </div>
-            <div id="notifications"></div>
-            <div class="login-section" id="login-section">
-                <input type="email" id="emailInput" placeholder="Your email">
-                <input type="password" id="passwordInput" placeholder="Your password">
-                <button id="loginButton">Login</button>
+
+            <!-- Stock Market Chart 2 -->
+            <div class="chart">
+                <iframe frameborder="0" scrolling="no" src="https://ssltvc.investing.com/?pair_ID=8985&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20"></iframe>
             </div>
-            <button id="clearButton" class="clear-button" style="display:none;">Clear Notifications</button>
+        </div>
+
+        <!-- Stock List and Notification Section -->
+        <div class="stock-notification-container" style="height: 50vh;">
+            <!-- Stock List Section -->
+            <div id="stock-list" class="stock-list">
+                <h2>Stock List</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Stock Name</th>
+                            <th>High Level</th>
+                            <th>Low Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-data">
+                        <!-- Dynamic stock data will go here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Notification Section -->
+            <div id="notification-section" class="notification-section">
+                <h2>Live Notifications</h2>
+                <div id="notifications"></div>
+                <div class="message-input-container">
+                    <input type="text" id="messageInput" placeholder="Type a message..." style="display:none;">
+                    <button id="sendButton" style="display:none;">Send</button>
+                </div>
+                <div id="login-section" class="login-section">
+                    <input type="email" id="emailInput" placeholder="Your email" style="display:none;">
+                    <input type="password" id="passwordInput" placeholder="Your password" style="display:none;">
+                    <button id="loginButton" style="display:none;">Login</button>
+                </div>
+                <button id="clearButton" class="clear-button" style="display:none;">Clear Notifications</button>
+            </div>
         </div>
     </div>
 
@@ -232,92 +266,139 @@
         const firebaseConfig = {
             apiKey: "AIzaSyDwTHO5iVUFWS03jf0w_D0jePnpuM_Rbp0",
             authDomain: "algoji-4bc3b.firebaseapp.com",
-            databaseURL: "https://algoji-4bc3b-default-rtdb.asia-southeast1.firebasedatabase.app",
+            databaseURL: "https://algoji-4bc3b-default-rtdb.firebaseio.com",
             projectId: "algoji-4bc3b",
             storageBucket: "algoji-4bc3b.appspot.com",
-            messagingSenderId: "338557274451",
-            appId: "1:338557274451:web:20ae4ffa4e411111df79a6",
-            measurementId: "G-0ZJYHFEKYE"
+            messagingSenderId: "800158600317",
+            appId: "1:800158600317:web:0c1b74b1d2a140c67e55f5",
+            measurementId: "G-EJ6DF2SS65"
         };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
-        const notificationsRef = ref(database, 'notifications');
+        const auth = getAuth();
+        const db = getDatabase(app);
 
-        // Example stock data
-        const stocks = [
-            { name: 'Apple', high: 150, low: 145 },
-            { name: 'Google', high: 2800, low: 2700 },
-            { name: 'Amazon', high: 3500, low: 3400 },
-            { name: 'Tesla', high: 700, low: 650 }
-        ];
+        let userLoggedIn = false;
 
-        // Display stock data
-        const stockTable = document.getElementById('stock-data');
-        stocks.forEach(stock => {
-            let row = `<tr>
-                        <td>${stock.name}</td>
-                        <td>${stock.high}</td>
-                        <td>${stock.low}</td>
-                       </tr>`;
-            stockTable.innerHTML += row;
-        });
-
-        // Login button listener
-        document.getElementById('loginButton').addEventListener('click', function() {
+        document.getElementById('loginButton').addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    // Show input fields after login
-                    document.getElementById('messageInput').style.display = 'block';
-                    document.getElementById('sendButton').style.display = 'block';
-                    document.getElementById('clearButton').style.display = 'block';
-                    document.getElementById('login-section').style.display = 'none';
-                })
-                .catch((error) => {
-                    alert(error.message);
-                });
-        });
-
-        // Sending a message
-        document.getElementById('sendButton').addEventListener('click', function() {
-            const message = document.getElementById('messageInput').value;
-            if (message) {
-                const timestamp = new Date().toLocaleTimeString(); // Get the current time
-                push(notificationsRef, { text: message, time: timestamp });
-                document.getElementById('messageInput').value = ''; // Clear input
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                userLoggedIn = true;
+                document.getElementById('messageInput').style.display = 'block';
+                document.getElementById('sendButton').style.display = 'block';
+                document.getElementById('clearButton').style.display = 'block';
+                document.getElementById('login-section').style.display = 'none'; // Hide login section
+                document.getElementById('notifications').innerHTML = ''; // Clear previous notifications
+            } catch (error) {
+                alert(error.message);
             }
         });
 
-        // Clear notifications
-        document.getElementById('clearButton').addEventListener('click', function() {
-            get(notificationsRef).then(snapshot => {
-                snapshot.forEach(childSnapshot => {
-                    remove(ref(database, 'notifications/' + childSnapshot.key));
+        document.getElementById('sendButton').addEventListener('click', () => {
+            const messageInput = document.getElementById('messageInput');
+            const messageText = messageInput.value;
+            if (messageText && userLoggedIn) {
+                const notificationsRef = ref(db, 'notifications');
+                const newNotificationRef = push(notificationsRef);
+                newNotificationRef.set({
+                    message: messageText,
+                    timestamp: Date.now(),
                 });
+                messageInput.value = ''; // Clear input after sending
+            }
+        });
+
+        // Clear Notifications
+        document.getElementById('clearButton').addEventListener('click', async () => {
+            const notificationsRef = ref(db, 'notifications');
+            const snapshot = await get(notificationsRef);
+            snapshot.forEach(childSnapshot => {
+                remove(ref(db, 'notifications/' + childSnapshot.key));
             });
         });
 
+        const notificationsDiv = document.getElementById('notifications');
+        const notificationSound = document.getElementById('notification-sound');
+
         // Listen for new notifications
-        onChildAdded(notificationsRef, (data) => {
-            const message = data.val().text;
-            const timestamp = data.val().time; // Get the timestamp
+        onChildAdded(ref(db, 'notifications'), (data) => {
+            const notification = data.val();
             const notificationDiv = document.createElement('div');
             notificationDiv.classList.add('message');
-            notificationDiv.innerHTML = `${message}<div class="timestamp">${timestamp}</div>`; // Include timestamp
+            notificationDiv.innerText = notification.message;
 
-            // Play notification sound
-            document.getElementById('notification-sound').play();
+            // Create a timestamp
+            const date = new Date(notification.timestamp);
+            const timeString = `${date.getHours()}:${date.getMinutes()}`;
+            const timestampDiv = document.createElement('div');
+            timestampDiv.classList.add('timestamp');
+            timestampDiv.innerText = timeString;
 
-            // Prepend the new notification to the top
-            const notificationsContainer = document.getElementById('notifications');
-            notificationsContainer.insertBefore(notificationDiv, notificationsContainer.firstChild);
+            notificationDiv.appendChild(timestampDiv);
+            notificationsDiv.prepend(notificationDiv); // Show new notifications on top
+            notificationSound.play();
         });
+
     </script>
+
+    <!-- TradingView Widget BEGIN -->
+    <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        {
+        "symbols": [
+            {
+                "description": "",
+                "proName": "NSE:RELIANCE"
+            },
+            {
+                "description": "",
+                "proName": "NSE:TATAMOTORS"
+            },
+            {
+                "description": "",
+                "proName": "NSE:TATAPOWER"
+            },
+            {
+                "description": "",
+                "proName": "NSE:ASIANPAINT"
+            },
+            {
+                "description": "",
+                "proName": "NSE:MCX"
+            },
+            {
+                "description": "",
+                "proName": "NYSE:DOW"
+            },
+            {
+                "description": "",
+                "proName": "NSE:HDFCBANK"
+            },
+            {
+                "description": "",
+                "proName": "NSE:TCS"
+            },
+            {
+                "description": "",
+                "proName": "NSE:ICICIBANK"
+            }
+        ],
+        "showSymbolLogo": true,
+        "isTransparent": false,
+        "displayMode": "adaptive",
+        "colorTheme": "dark",
+        "locale": "en"
+        }
+        </script>
+    </div>
+    <!-- TradingView Widget END -->
+
 </body>
 </html>
