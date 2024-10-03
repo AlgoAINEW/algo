@@ -6,247 +6,128 @@
     <title>Stock Market App</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #1e1e1e;
-            color: #eaeaea;
+            background-color: #f4f4f4;
         }
-
+        .chart-container, .notification-container, .stock-list-container {
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #fff;
+            margin: 5px 0;
+            border-radius: 8px;
+        }
         h2 {
-            color: #61dafb;
-            text-align: center;
-            margin: 10px 0;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column; /* Change to column for mobile */
-            align-items: center; /* Center items */
             margin: 0;
-            padding: 0;
+            padding: 10px;
+            background-color: #2980b9;
+            color: white;
+            border-radius: 8px 8px 0 0;
         }
-
-        .chart {
-            width: 90%; /* Use percentage for responsiveness */
-            height: 250px; /* Set a specific height for smaller screens */
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            background-color: #2a2a2a;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
-        }
-
-        iframe:hover {
-            transform: scale(1.02);
-        }
-
-        .stock-notification-container {
-            display: flex;
-            flex-direction: column; /* Change to column for mobile */
-            margin: 0;
-            padding: 0;
-            width: 90%; /* Use percentage for responsiveness */
-        }
-
-        .stock-list, .notification-section {
-            padding: 20px;
-            background-color: #2a2a2a;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            margin-bottom: 20px; /* Added margin for spacing */
-            overflow-y: auto;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
         }
-
         th, td {
-            border: 1px solid #444;
-            padding: 10px;
+            border: 1px solid #ddd;
+            padding: 8px;
             text-align: left;
         }
-
         th {
-            background-color: #61dafb;
-            color: black;
+            background-color: #2980b9;
+            color: white;
         }
-
         .message {
             padding: 10px;
-            border: 1px solid #444;
-            margin-bottom: 5px;
-            background-color: #3a3a3a;
+            margin: 5px 0;
+            background-color: #eaf7f8;
+            border-left: 5px solid #2980b9;
             border-radius: 5px;
-            animation: fadeIn 0.5s ease;
+            position: relative;
         }
-
-        .timestamp {
+        .message-time {
             font-size: 0.8em;
-            color: #bbb;
+            color: #555;
+            position: absolute;
+            right: 10px;
+            top: 5px;
         }
-
-        input[type="text"], input[type="email"], input[type="password"] {
+        #messageInput, #sendButton {
             width: 100%;
             margin-top: 10px;
-            padding: 10px;
-            border: 1px solid #444;
-            border-radius: 5px;
-            background-color: #333;
-            color: #eaeaea;
-            transition: border-color 0.3s;
         }
-
-        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
-            border-color: #61dafb;
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            background-color: #61dafb;
-            color: black;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        button:hover {
-            background-color: #51b0d2;
-            transform: scale(1.02);
-        }
-
-        .clear-button {
-            background-color: #c0392b;
-        }
-
-        .clear-button:hover {
-            background-color: #a83227;
-        }
-
-        .login-section {
-            margin-top: 20px;
-        }
-
         #notifications {
-            max-height: 200px;
+            height: 200px;
             overflow-y: auto;
-            border: 1px solid #444;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #3a3a3a;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .message-input-container {
             margin-bottom: 10px;
         }
-
-        .tradingview-widget-container {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .tradingview-widget-container__widget {
-            width: 100%;
-            height: 60px;
-            margin: 0 auto;
-        }
-
-        .blue-text {
-            color: #61dafb;
-        }
-
-        /* Media Queries for Mobile */
+        /* Mobile Styles */
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                align-items: center;
+            .chart-container {
+                height: 35vh;
             }
-
-            .chart {
-                width: 90%;
-                height: 200px; /* Adjust height for smaller screens */
+            .notification-container, .stock-list-container {
+                height: auto;
             }
-
-            .stock-notification-container {
-                flex-direction: column;
-                width: 90%;
-            }
-
-            .stock-list, .notification-section {
-                width: 100%; /* Full width on mobile */
-                margin-bottom: 20px;
-            }
-
             .message {
-                font-size: 0.9em; /* Slightly smaller font size for messages */
+                font-size: 0.9em;
+            }
+        }
+        @media (max-width: 480px) {
+            .chart-container {
+                height: 30vh;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            table {
+                font-size: 0.9em;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Stock Market Charts -->
-        <div style="display: flex; justify-content: space-between; margin: 0; padding: 0; height: 50vh;">
-            <!-- Stock Market Chart 1 -->
-            <div class="chart">
-                <iframe frameborder="0" scrolling="no" src="https://ssltvc.investing.com/?pair_ID=17940&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20"></iframe>
-            </div>
+    <!-- Stock Market Charts -->
+    <div class="chart-container" style="display: flex; justify-content: space-between; height: 58vh;">
+        <div style="width: 49%;">
+            <iframe frameborder="0" scrolling="no" src="https://ssltvc.investing.com/?pair_ID=17940&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20" style="width: 100%; height: 100%;"></iframe>
+        </div>
+        <div style="width: 49%;">
+            <iframe frameborder="0" scrolling="no" src="https://ssltvc.investing.com/?pair_ID=8985&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20" style="width: 100%; height: 100%;"></iframe>
+        </div>
+    </div>
 
-            <!-- Stock Market Chart 2 -->
-            <div class="chart">
-                <iframe frameborder="0" scrolling="no" src="https://ssltvc.investing.com/?pair_ID=8985&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20"></iframe>
-            </div>
+    <!-- Stock List and Notification Section -->
+    <div style="display: flex; justify-content: space-between; height: 42vh;">
+        <!-- Stock List Section -->
+        <div class="stock-list-container" style="width: 49%;">
+            <h2>Stock List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stock Name</th>
+                        <th>High Level</th>
+                        <th>Low Level</th>
+                    </tr>
+                </thead>
+                <tbody id="stock-data">
+                    <!-- Dynamic stock data will go here -->
+                </tbody>
+            </table>
         </div>
 
-        <!-- Stock List and Notification Section -->
-        <div class="stock-notification-container" style="height: 50vh;">
-            <!-- Stock List Section -->
-            <div id="stock-list" class="stock-list">
-                <h2>Stock List</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Stock Name</th>
-                            <th>High Level</th>
-                            <th>Low Level</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stock-data">
-                        <!-- Dynamic stock data will go here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Notification Section -->
-            <div id="notification-section" class="notification-section">
-                <h2>Live Notifications</h2>
-                <div id="notifications"></div>
-                <div class="message-input-container">
-                    <input type="text" id="messageInput" placeholder="Type a message..." style="display:none;">
-                    <button id="sendButton" style="display:none;">Send</button>
-                </div>
-                <div id="login-section" class="login-section">
-                    <input type="email" id="emailInput" placeholder="Your email" style="display:none;">
-                    <input type="password" id="passwordInput" placeholder="Your password" style="display:none;">
-                    <button id="loginButton" style="display:none;">Login</button>
-                </div>
-                <button id="clearButton" class="clear-button" style="display:none;">Clear Notifications</button>
+        <!-- Notification Section -->
+        <div class="notification-container" style="width: 49%;">
+            <h2>Live Notifications</h2>
+            <div id="notifications"></div>
+            <input type="text" id="messageInput" placeholder="Type a message..." style="display:none;">
+            <button id="sendButton" style="display:none;">Send</button>
+            <div id="login-section">
+                <input type="email" id="emailInput" placeholder="Your email" style="margin-top: 10px;">
+                <input type="password" id="passwordInput" placeholder="Your password" style="margin-top: 10px;">
+                <button id="loginButton" style="margin-top: 10px;">Login</button>
             </div>
         </div>
     </div>
@@ -256,149 +137,85 @@
 
     <!-- Firebase SDK -->
     <script type="module">
-        // Import Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-        import { getDatabase, ref, push, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-        // Your Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDwTHO5iVUFWS03jf0w_D0jePnpuM_Rbp0",
             authDomain: "algoji-4bc3b.firebaseapp.com",
-            databaseURL: "https://algoji-4bc3b-default-rtdb.firebaseio.com",
+            databaseURL: "https://algoji-4bc3b-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "algoji-4bc3b",
             storageBucket: "algoji-4bc3b.appspot.com",
-            messagingSenderId: "800158600317",
-            appId: "1:800158600317:web:0c1b74b1d2a140c67e55f5",
-            measurementId: "G-EJ6DF2SS65"
+            messagingSenderId: "338557274451",
+            appId: "1:338557274451:web:20ae4ffa4e411111df79a6",
+            measurementId: "G-0ZJYHFEKYE"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-        const auth = getAuth();
-        const db = getDatabase(app);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+        const notificationsRef = ref(database, 'notifications');
 
-        let userLoggedIn = false;
+        const stocks = [
+            { name: 'Apple', high: 180, low: 170 },
+            { name: 'Google', high: 2700, low: 2600 },
+            { name: 'Tesla', high: 800, low: 750 }
+        ];
 
-        document.getElementById('loginButton').addEventListener('click', async () => {
+        const stockTable = document.getElementById('stock-data');
+        stocks.forEach(stock => {
+            let row = `<tr>
+                        <td>${stock.name}</td>
+                        <td>${stock.high}</td>
+                        <td>${stock.low}</td>
+                       </tr>`;
+            stockTable.innerHTML += row;
+        });
+
+        document.getElementById('loginButton').addEventListener('click', function() {
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
 
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                userLoggedIn = true;
-                document.getElementById('messageInput').style.display = 'block';
-                document.getElementById('sendButton').style.display = 'block';
-                document.getElementById('clearButton').style.display = 'block';
-                document.getElementById('login-section').style.display = 'none'; // Hide login section
-                document.getElementById('notifications').innerHTML = ''; // Clear previous notifications
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-
-        document.getElementById('sendButton').addEventListener('click', () => {
-            const messageInput = document.getElementById('messageInput');
-            const messageText = messageInput.value;
-            if (messageText && userLoggedIn) {
-                const notificationsRef = ref(db, 'notifications');
-                const newNotificationRef = push(notificationsRef);
-                newNotificationRef.set({
-                    message: messageText,
-                    timestamp: Date.now(),
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    document.getElementById('messageInput').style.display = 'block';
+                    document.getElementById('sendButton').style.display = 'block';
+                    document.getElementById('login-section').style.display = 'none';
+                })
+                .catch((error) => {
+                    alert(error.message);
                 });
-                messageInput.value = ''; // Clear input after sending
+        });
+
+        document.getElementById('sendButton').addEventListener('click', function() {
+            const message = document.getElementById('messageInput').value;
+            if (message) {
+                push(notificationsRef, { text: message });
+                document.getElementById('messageInput').value = ''; // Clear input
             }
         });
 
-        // Clear Notifications
-        document.getElementById('clearButton').addEventListener('click', async () => {
-            const notificationsRef = ref(db, 'notifications');
-            const snapshot = await get(notificationsRef);
-            snapshot.forEach(childSnapshot => {
-                remove(ref(db, 'notifications/' + childSnapshot.key));
-            });
-        });
+        onChildAdded(notificationsRef, (data) => {
+            const newMessage = data.val();
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.textContent = newMessage.text;
 
-        const notificationsDiv = document.getElementById('notifications');
-        const notificationSound = document.getElementById('notification-sound');
+            const timeDiv = document.createElement('span');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = new Date().toLocaleTimeString(); // Current time
+            messageDiv.appendChild(timeDiv);
 
-        // Listen for new notifications
-        onChildAdded(ref(db, 'notifications'), (data) => {
-            const notification = data.val();
-            const notificationDiv = document.createElement('div');
-            notificationDiv.classList.add('message');
-            notificationDiv.innerText = notification.message;
+            const notificationsDiv = document.getElementById('notifications');
+            notificationsDiv.insertBefore(messageDiv, notificationsDiv.firstChild);
 
-            // Create a timestamp
-            const date = new Date(notification.timestamp);
-            const timeString = `${date.getHours()}:${date.getMinutes()}`;
-            const timestampDiv = document.createElement('div');
-            timestampDiv.classList.add('timestamp');
-            timestampDiv.innerText = timeString;
-
-            notificationDiv.appendChild(timestampDiv);
-            notificationsDiv.prepend(notificationDiv); // Show new notifications on top
-            notificationSound.play();
+            document.getElementById('notification-sound').play();
+            notificationsDiv.scrollTop = 0; // Scroll to top
         });
 
     </script>
-
-    <!-- TradingView Widget BEGIN -->
-    <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget"></div>
-        <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-        {
-        "symbols": [
-            {
-                "description": "",
-                "proName": "NSE:RELIANCE"
-            },
-            {
-                "description": "",
-                "proName": "NSE:TATAMOTORS"
-            },
-            {
-                "description": "",
-                "proName": "NSE:TATAPOWER"
-            },
-            {
-                "description": "",
-                "proName": "NSE:ASIANPAINT"
-            },
-            {
-                "description": "",
-                "proName": "NSE:MCX"
-            },
-            {
-                "description": "",
-                "proName": "NYSE:DOW"
-            },
-            {
-                "description": "",
-                "proName": "NSE:HDFCBANK"
-            },
-            {
-                "description": "",
-                "proName": "NSE:TCS"
-            },
-            {
-                "description": "",
-                "proName": "NSE:ICICIBANK"
-            }
-        ],
-        "showSymbolLogo": true,
-        "isTransparent": false,
-        "displayMode": "adaptive",
-        "colorTheme": "dark",
-        "locale": "en"
-        }
-        </script>
-    </div>
-    <!-- TradingView Widget END -->
-
 </body>
 </html>
