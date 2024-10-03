@@ -6,103 +6,185 @@
     <title>Stock Market App</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #1e1e1e;
+            color: #eaeaea;
         }
-        .chart-container, .notification-container, .stock-list-container {
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            background-color: #fff;
-            margin: 5px 0;
-            border-radius: 8px;
-        }
+
         h2 {
-            margin: 0;
-            padding: 10px;
-            background-color: #2980b9;
-            color: white;
-            border-radius: 8px 8px 0 0;
+            color: #61dafb;
+            text-align: center;
+            margin: 10px 0;
         }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin: 0;
+            padding: 0;
+            height: 50vh;
+            transition: height 0.3s ease;
+        }
+
+        .chart {
+            width: 49%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px; /* Added margin for spacing */
+            background-color: #2a2a2a; /* Dark background for charts */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        iframe:hover {
+            transform: scale(1.02);
+        }
+
+        .stock-notification-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 0;
+            padding: 0;
+            height: 42vh;
+        }
+
+        .stock-list, .notification-section {
+            width: 49%;
+            padding: 20px;
+            background-color: #2a2a2a; /* Dark background for lists */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+            margin-bottom: 0; /* Remove margin to reduce extra space */
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 10px; /* Adjusted margin */
         }
+
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid #444;
+            padding: 10px;
             text-align: left;
         }
+
         th {
-            background-color: #2980b9;
-            color: white;
+            background-color: #61dafb; /* Header background color */
+            color: black;
         }
+
         .message {
             padding: 10px;
-            margin: 5px 0;
-            background-color: #eaf7f8;
-            border-left: 5px solid #2980b9;
+            border: 1px solid #444;
+            margin-bottom: 5px;
+            background-color: #3a3a3a;
             border-radius: 5px;
-            position: relative;
+            animation: fadeIn 0.5s ease;
         }
-        .message-time {
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .timestamp {
             font-size: 0.8em;
-            color: #555;
-            position: absolute;
-            right: 10px;
-            top: 5px;
+            color: #bbb;
         }
-        #messageInput, #sendButton {
+
+        input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
             margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #333; /* Dark input background */
+            color: #eaeaea; /* Input text color */
+            transition: border-color 0.3s;
         }
+
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            border-color: #61dafb;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #61dafb; /* Button background color */
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #51b0d2;
+            transform: scale(1.02);
+        }
+
+        .clear-button {
+            background-color: #c0392b;
+        }
+
+        .clear-button:hover {
+            background-color: #a83227;
+        }
+
+        .login-section {
+            margin-top: 20px;
+        }
+
         #notifications {
-            height: 200px;
+            max-height: 200px;
             overflow-y: auto;
-            margin-bottom: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #3a3a3a;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 35vh;
-            }
-            .notification-container, .stock-list-container {
-                height: auto;
-            }
-            .message {
-                font-size: 0.9em;
-            }
-        }
-        @media (max-width: 480px) {
-            .chart-container {
-                height: 30vh;
-            }
-            h2 {
-                font-size: 1.5em;
-            }
-            table {
-                font-size: 0.9em;
-            }
+
+        .message-input-container {
+            margin-bottom: 10px; /* Added margin for spacing */
         }
     </style>
 </head>
 <body>
 
     <!-- Stock Market Charts -->
-    <div class="chart-container" style="display: flex; justify-content: space-between; height: 58vh;">
-        <div style="width: 49%;">
-            <iframe frameborder="0" scrolling="no" src="https://ssltvc.investing.com/?pair_ID=17940&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20" style="width: 100%; height: 100%;"></iframe>
+    <div class="container">
+        <!-- Stock Market Chart 1 -->
+        <div class="chart">
+            <iframe src="https://ssltvc.investing.com/?pair_ID=17940&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20"></iframe>
         </div>
-        <div style="width: 49%;">
-            <iframe frameborder="0" scrolling="no" src="https://ssltvc.investing.com/?pair_ID=8985&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20" style="width: 100%; height: 100%;"></iframe>
+
+        <!-- Stock Market Chart 2 -->
+        <div class="chart">
+            <iframe src="https://ssltvc.investing.com/?pair_ID=8985&height=650&width=1150&interval=300&plotStyle=candles&domain_ID=56&lang_ID=56&timezone_ID=20"></iframe>
         </div>
     </div>
 
     <!-- Stock List and Notification Section -->
-    <div style="display: flex; justify-content: space-between; height: 42vh;">
+    <div class="stock-notification-container">
         <!-- Stock List Section -->
-        <div class="stock-list-container" style="width: 49%;">
+        <div id="stock-list" class="stock-list">
             <h2>Stock List</h2>
             <table>
                 <thead>
@@ -119,16 +201,19 @@
         </div>
 
         <!-- Notification Section -->
-        <div class="notification-container" style="width: 49%;">
+        <div id="notification-section" class="notification-section">
             <h2>Live Notifications</h2>
-            <div id="notifications"></div>
-            <input type="text" id="messageInput" placeholder="Type a message..." style="display:none;">
-            <button id="sendButton" style="display:none;">Send</button>
-            <div id="login-section">
-                <input type="email" id="emailInput" placeholder="Your email" style="margin-top: 10px;">
-                <input type="password" id="passwordInput" placeholder="Your password" style="margin-top: 10px;">
-                <button id="loginButton" style="margin-top: 10px;">Login</button>
+            <div class="message-input-container">
+                <input type="text" id="messageInput" placeholder="Type a message..." style="display:none;">
+                <button id="sendButton" style="display:none;">Send</button>
             </div>
+            <div id="notifications"></div>
+            <div class="login-section" id="login-section">
+                <input type="email" id="emailInput" placeholder="Your email">
+                <input type="password" id="passwordInput" placeholder="Your password">
+                <button id="loginButton">Login</button>
+            </div>
+            <button id="clearButton" class="clear-button" style="display:none;">Clear Notifications</button>
         </div>
     </div>
 
@@ -137,11 +222,13 @@
 
     <!-- Firebase SDK -->
     <script type="module">
+        // Import Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-        import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
+        // Your Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDwTHO5iVUFWS03jf0w_D0jePnpuM_Rbp0",
             authDomain: "algoji-4bc3b.firebaseapp.com",
@@ -153,18 +240,22 @@
             measurementId: "G-0ZJYHFEKYE"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const database = getDatabase(app);
         const notificationsRef = ref(database, 'notifications');
 
+        // Example stock data
         const stocks = [
-            { name: 'Apple', high: 180, low: 170 },
-            { name: 'Google', high: 2700, low: 2600 },
-            { name: 'Tesla', high: 800, low: 750 }
+            { name: 'Apple', high: 150, low: 145 },
+            { name: 'Google', high: 2800, low: 2700 },
+            { name: 'Amazon', high: 3500, low: 3400 },
+            { name: 'Tesla', high: 700, low: 650 }
         ];
 
+        // Display stock data
         const stockTable = document.getElementById('stock-data');
         stocks.forEach(stock => {
             let row = `<tr>
@@ -175,14 +266,17 @@
             stockTable.innerHTML += row;
         });
 
+        // Login button listener
         document.getElementById('loginButton').addEventListener('click', function() {
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
 
             signInWithEmailAndPassword(auth, email, password)
                 .then(() => {
+                    // Show input fields after login
                     document.getElementById('messageInput').style.display = 'block';
                     document.getElementById('sendButton').style.display = 'block';
+                    document.getElementById('clearButton').style.display = 'block';
                     document.getElementById('login-section').style.display = 'none';
                 })
                 .catch((error) => {
@@ -190,32 +284,40 @@
                 });
         });
 
+        // Sending a message
         document.getElementById('sendButton').addEventListener('click', function() {
             const message = document.getElementById('messageInput').value;
             if (message) {
-                push(notificationsRef, { text: message });
+                const timestamp = new Date().toLocaleTimeString(); // Get the current time
+                push(notificationsRef, { text: message, time: timestamp });
                 document.getElementById('messageInput').value = ''; // Clear input
             }
         });
 
-        onChildAdded(notificationsRef, (data) => {
-            const newMessage = data.val();
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-            messageDiv.textContent = newMessage.text;
-
-            const timeDiv = document.createElement('span');
-            timeDiv.className = 'message-time';
-            timeDiv.textContent = new Date().toLocaleTimeString(); // Current time
-            messageDiv.appendChild(timeDiv);
-
-            const notificationsDiv = document.getElementById('notifications');
-            notificationsDiv.insertBefore(messageDiv, notificationsDiv.firstChild);
-
-            document.getElementById('notification-sound').play();
-            notificationsDiv.scrollTop = 0; // Scroll to top
+        // Clear notifications
+        document.getElementById('clearButton').addEventListener('click', function() {
+            get(notificationsRef).then(snapshot => {
+                snapshot.forEach(childSnapshot => {
+                    remove(ref(database, 'notifications/' + childSnapshot.key));
+                });
+            });
         });
 
+        // Listen for new notifications
+        onChildAdded(notificationsRef, (data) => {
+            const message = data.val().text;
+            const timestamp = data.val().time; // Get the timestamp
+            const notificationDiv = document.createElement('div');
+            notificationDiv.classList.add('message');
+            notificationDiv.innerHTML = `${message}<div class="timestamp">${timestamp}</div>`; // Include timestamp
+
+            // Play notification sound
+            document.getElementById('notification-sound').play();
+
+            // Prepend the new notification to the top
+            const notificationsContainer = document.getElementById('notifications');
+            notificationsContainer.insertBefore(notificationDiv, notificationsContainer.firstChild);
+        });
     </script>
 </body>
 </html>
