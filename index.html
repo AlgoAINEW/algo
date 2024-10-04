@@ -244,10 +244,6 @@
         const database = getDatabase(app);
         const notificationsRef = ref(database, 'notifications');
 
-        // Preload notification sound
-        const notificationSound = new Audio('https://raw.githubusercontent.com/AlgoAINEW/algo/main/mixkit-bell-notification-933.wav');
-        notificationSound.preload = 'auto'; // Preload the sound
-
         // Example stock data
         const stocks = [
             { name: 'Apple', high: 150, low: 145 },
@@ -256,73 +252,70 @@
             { name: 'Tesla', high: 700, low: 650 }
         ];
 
-        // Display stock data
-        const stockData = document.getElementById('stock-data');
+        // Populate stock data into the table
+        const stockDataElement = document.getElementById('stock-data');
         stocks.forEach(stock => {
             const row = document.createElement('tr');
             row.innerHTML = `<td>${stock.name}</td><td>${stock.high}</td><td>${stock.low}</td>`;
-            stockData.appendChild(row);
+            stockDataElement.appendChild(row);
         });
 
         // Login functionality
-        const loginButton = document.getElementById('loginButton');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const clearButton = document.getElementById('clearButton');
-
-        loginButton.addEventListener('click', () => {
+        document.getElementById('loginButton').addEventListener('click', () => {
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
 
             signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log('User logged in:', user.uid);
-                    messageInput.style.display = 'block';
-                    sendButton.style.display = 'block';
-                    clearButton.style.display = 'block';
+                .then(userCredential => {
                     document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('messageInput').style.display = 'block';
+                    document.getElementById('sendButton').style.display = 'block';
+                    document.getElementById('clearButton').style.display = 'block';
+                    console.log('Logged in successfully!');
                 })
-                .catch((error) => {
-                    console.error('Login failed:', error.message);
+                .catch(error => {
+                    console.error('Login failed:', error);
                 });
         });
 
-        // Send notifications
-        sendButton.addEventListener('click', () => {
-            const message = messageInput.value;
-            if (message) {
-                push(notificationsRef, { text: message, time: new Date().toLocaleString() });
-                messageInput.value = ''; // Clear input after sending
-            }
-        });
-
-        // Clear notifications
-        clearButton.addEventListener('click', () => {
-            const notifications = document.querySelectorAll('.message');
-            notifications.forEach(notification => {
-                notification.remove();
-            });
-        });
+        // Sound for notifications
+        const notificationSound = new Audio('https://www.soundjay.com/button/sounds/button-3.mp3');
 
         // Listen for new notifications
         onChildAdded(notificationsRef, (data) => {
-            const message = data.val().text;
-            const timestamp = data.val().time; // Get the timestamp
-            const notificationDiv = document.createElement('div');
-            notificationDiv.classList.add('message');
-            notificationDiv.innerHTML = `${message}<div class="timestamp">${timestamp}</div>`; // Include timestamp
+            const notification = data.val();
+            displayNotification(notification.message);
+            notificationSound.play(); // Play sound on new notification
+        });
 
-            // Play notification sound
-            notificationSound.play().catch((error) => {
-                console.log("Sound playback error: ", error.message);  // In case of any playback errors
-            });
+        // Function to display notification
+        function displayNotification(message) {
+            const notificationsDiv = document.getElementById('notifications');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.innerHTML = `<span>${message}</span><span class="timestamp">${new Date().toLocaleTimeString()}</span>`;
+            notificationsDiv.appendChild(messageDiv);
+            notificationsDiv.scrollTop = notificationsDiv.scrollHeight; // Scroll to the bottom
+        }
 
-            // Prepend the new notification to the top
-            const notificationsContainer = document.getElementById('notifications');
-            notificationsContainer.insertBefore(notificationDiv, notificationsContainer.firstChild);
+        // Send button functionality
+        document.getElementById('sendButton').addEventListener('click', () => {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+
+            if (message) {
+                push(notificationsRef, { message });
+                messageInput.value = ''; // Clear the input field
+            }
+        });
+
+        // Clear notifications button functionality
+        document.getElementById('clearButton').addEventListener('click', () => {
+            const notificationsDiv = document.getElementById('notifications');
+            notificationsDiv.innerHTML = ''; // Clear the notification display
+            // Optionally, remove all notifications from the database
+            // remove(notificationsRef); // Uncomment to remove from Firebase
         });
     </script>
-
 </body>
 </html>
