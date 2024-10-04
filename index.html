@@ -244,30 +244,23 @@
         const database = getDatabase(app);
         const notificationsRef = ref(database, 'notifications');
 
-        // Preload the notification sound
-        const notificationSound = new Audio('https://raw.githubusercontent.com/AlgoAINEW/algo/main/mixkit-bell-notification-933.wav');
-
         // Example stock data
         const stocks = [
             { name: 'Apple', high: 150, low: 145 },
             { name: 'Google', high: 2800, low: 2700 },
             { name: 'Amazon', high: 3500, low: 3400 },
-            { name: 'Tesla', high: 900, low: 880 }
+            { name: 'Tesla', high: 700, low: 650 }
         ];
 
-        // Populate stock data into the table
+        // Display stock data
         const stockData = document.getElementById('stock-data');
         stocks.forEach(stock => {
             const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${stock.name}</td>
-                <td>${stock.high}</td>
-                <td>${stock.low}</td>
-            `;
+            row.innerHTML = `<td>${stock.name}</td><td>${stock.high}</td><td>${stock.low}</td>`;
             stockData.appendChild(row);
         });
 
-        // Login button
+        // Login functionality
         const loginButton = document.getElementById('loginButton');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
@@ -281,13 +274,6 @@
                 .then((userCredential) => {
                     const user = userCredential.user;
                     console.log('User logged in:', user.uid);
-
-                    // Allow notification sound to play after login
-                    document.body.addEventListener('click', () => {
-                        notificationSound.play();
-                    }, { once: true }); // Ensures the user has interacted with the page at least once
-
-                    // Show message input and clear button
                     messageInput.style.display = 'block';
                     sendButton.style.display = 'block';
                     clearButton.style.display = 'block';
@@ -298,20 +284,21 @@
                 });
         });
 
-        // Send button
+        // Send notifications
         sendButton.addEventListener('click', () => {
             const message = messageInput.value;
-            if (message.trim() !== '') {
-                const timestamp = new Date().toLocaleTimeString();
-                push(notificationsRef, { text: message, time: timestamp });
-                messageInput.value = '';
+            if (message) {
+                push(notificationsRef, { text: message, time: new Date().toLocaleString() });
+                messageInput.value = ''; // Clear input after sending
             }
         });
 
-        // Clear button
+        // Clear notifications
         clearButton.addEventListener('click', () => {
-            remove(notificationsRef);
-            document.getElementById('notifications').innerHTML = '';
+            const notifications = document.querySelectorAll('.message');
+            notifications.forEach(notification => {
+                notification.remove();
+            });
         });
 
         // Listen for new notifications
@@ -322,16 +309,14 @@
             notificationDiv.classList.add('message');
             notificationDiv.innerHTML = `${message}<div class="timestamp">${timestamp}</div>`; // Include timestamp
 
+            // Play notification sound
+            const notificationSound = new Audio('https://raw.githubusercontent.com/AlgoAINEW/algo/main/mixkit-bell-notification-933.wav');
+            notificationSound.play();
+
             // Prepend the new notification to the top
             const notificationsContainer = document.getElementById('notifications');
             notificationsContainer.insertBefore(notificationDiv, notificationsContainer.firstChild);
-
-            // Play notification sound
-            notificationSound.play().catch((error) => {
-                console.error('Failed to play sound:', error);
-            });
         });
     </script>
-
 </body>
 </html>
