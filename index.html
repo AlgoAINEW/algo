@@ -252,69 +252,70 @@
             { name: 'Tesla', high: 700, low: 650 }
         ];
 
-        // Populate stock data into the table
-        const stockDataElement = document.getElementById('stock-data');
+        // Display stock data
+        const stockData = document.getElementById('stock-data');
         stocks.forEach(stock => {
             const row = document.createElement('tr');
             row.innerHTML = `<td>${stock.name}</td><td>${stock.high}</td><td>${stock.low}</td>`;
-            stockDataElement.appendChild(row);
+            stockData.appendChild(row);
         });
 
         // Login functionality
-        document.getElementById('loginButton').addEventListener('click', () => {
+        const loginButton = document.getElementById('loginButton');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const clearButton = document.getElementById('clearButton');
+
+        loginButton.addEventListener('click', () => {
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
 
             signInWithEmailAndPassword(auth, email, password)
-                .then(userCredential => {
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log('User logged in:', user.uid);
+                    messageInput.style.display = 'block';
+                    sendButton.style.display = 'block';
+                    clearButton.style.display = 'block';
                     document.getElementById('login-section').style.display = 'none';
-                    document.getElementById('messageInput').style.display = 'block';
-                    document.getElementById('sendButton').style.display = 'block';
-                    document.getElementById('clearButton').style.display = 'block';
-                    console.log('Logged in successfully!');
                 })
-                .catch(error => {
-                    console.error('Login failed:', error);
+                .catch((error) => {
+                    console.error('Login failed:', error.message);
                 });
         });
 
-        // Sound for notifications
-        const notificationSound = new Audio('https://www.soundjay.com/button/sounds/button-3.mp3');
-
-        // Listen for new notifications
-        onChildAdded(notificationsRef, (data) => {
-            const notification = data.val();
-            displayNotification(notification.message);
-            notificationSound.play(); // Play sound on new notification
-        });
-
-        // Function to display notification
-        function displayNotification(message) {
-            const notificationsDiv = document.getElementById('notifications');
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            messageDiv.innerHTML = `<span>${message}</span><span class="timestamp">${new Date().toLocaleTimeString()}</span>`;
-            notificationsDiv.appendChild(messageDiv);
-            notificationsDiv.scrollTop = notificationsDiv.scrollHeight; // Scroll to the bottom
-        }
-
-        // Send button functionality
-        document.getElementById('sendButton').addEventListener('click', () => {
-            const messageInput = document.getElementById('messageInput');
+        // Send notifications
+        sendButton.addEventListener('click', () => {
             const message = messageInput.value;
-
             if (message) {
-                push(notificationsRef, { message });
-                messageInput.value = ''; // Clear the input field
+                push(notificationsRef, { text: message, time: new Date().toLocaleString() });
+                messageInput.value = ''; // Clear input after sending
             }
         });
 
-        // Clear notifications button functionality
-        document.getElementById('clearButton').addEventListener('click', () => {
-            const notificationsDiv = document.getElementById('notifications');
-            notificationsDiv.innerHTML = ''; // Clear the notification display
-            // Optionally, remove all notifications from the database
-            // remove(notificationsRef); // Uncomment to remove from Firebase
+        // Clear notifications
+        clearButton.addEventListener('click', () => {
+            const notifications = document.querySelectorAll('.message');
+            notifications.forEach(notification => {
+                notification.remove();
+            });
+        });
+
+        // Listen for new notifications
+        onChildAdded(notificationsRef, (data) => {
+            const message = data.val().text;
+            const timestamp = data.val().time; // Get the timestamp
+            const notificationDiv = document.createElement('div');
+            notificationDiv.classList.add('message');
+            notificationDiv.innerHTML = `${message}<div class="timestamp">${timestamp}</div>`; // Include timestamp
+
+            // Play notification sound
+            const notificationSound = new Audio('https://raw.githubusercontent.com/AlgoAINEW/algo/main/mixkit-bell-notification-933.wav');
+            notificationSound.play();
+
+            // Prepend the new notification to the top
+            const notificationsContainer = document.getElementById('notifications');
+            notificationsContainer.insertBefore(notificationDiv, notificationsContainer.firstChild);
         });
     </script>
 </body>
