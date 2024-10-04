@@ -217,9 +217,6 @@
         </div>
     </div>
 
-    <!-- Notification Sound -->
-    <audio id="notification-sound" src="https://raw.githubusercontent.com/AlgoAINEW/algo/main/mixkit-bell-notification-933.wav" preload="auto"></audio>
-
     <!-- Firebase SDK -->
     <script type="module">
         // Import Firebase SDKs
@@ -256,50 +253,51 @@
         ];
 
         // Display stock data
-        const stockTable = document.getElementById('stock-data');
+        const stockData = document.getElementById('stock-data');
         stocks.forEach(stock => {
-            let row = `<tr>
-                        <td>${stock.name}</td>
-                        <td>${stock.high}</td>
-                        <td>${stock.low}</td>
-                       </tr>`;
-            stockTable.innerHTML += row;
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${stock.name}</td><td>${stock.high}</td><td>${stock.low}</td>`;
+            stockData.appendChild(row);
         });
 
-        // Login button listener
-        document.getElementById('loginButton').addEventListener('click', function() {
+        // Login functionality
+        const loginButton = document.getElementById('loginButton');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const clearButton = document.getElementById('clearButton');
+
+        loginButton.addEventListener('click', () => {
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
 
             signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    // Show input fields after login
-                    document.getElementById('messageInput').style.display = 'block';
-                    document.getElementById('sendButton').style.display = 'block';
-                    document.getElementById('clearButton').style.display = 'block';
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log('User logged in:', user.uid);
+                    messageInput.style.display = 'block';
+                    sendButton.style.display = 'block';
+                    clearButton.style.display = 'block';
                     document.getElementById('login-section').style.display = 'none';
                 })
                 .catch((error) => {
-                    alert(error.message);
+                    console.error('Login failed:', error.message);
                 });
         });
 
-        // Sending a message
-        document.getElementById('sendButton').addEventListener('click', function() {
-            const message = document.getElementById('messageInput').value;
+        // Send notifications
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value;
             if (message) {
-                const timestamp = new Date().toLocaleTimeString(); // Get the current time
-                push(notificationsRef, { text: message, time: timestamp });
-                document.getElementById('messageInput').value = ''; // Clear input
+                push(notificationsRef, { text: message, time: new Date().toLocaleString() });
+                messageInput.value = ''; // Clear input after sending
             }
         });
 
         // Clear notifications
-        document.getElementById('clearButton').addEventListener('click', function() {
-            get(notificationsRef).then(snapshot => {
-                snapshot.forEach(childSnapshot => {
-                    remove(ref(database, 'notifications/' + childSnapshot.key));
-                });
+        clearButton.addEventListener('click', () => {
+            const notifications = document.querySelectorAll('.message');
+            notifications.forEach(notification => {
+                notification.remove();
             });
         });
 
@@ -312,7 +310,8 @@
             notificationDiv.innerHTML = `${message}<div class="timestamp">${timestamp}</div>`; // Include timestamp
 
             // Play notification sound
-            document.getElementById('notification-sound').play();
+            const notificationSound = new Audio('https://raw.githubusercontent.com/AlgoAINEW/algo/main/mixkit-bell-notification-933.wav');
+            notificationSound.play();
 
             // Prepend the new notification to the top
             const notificationsContainer = document.getElementById('notifications');
