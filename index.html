@@ -244,6 +244,10 @@
         const database = getDatabase(app);
         const notificationsRef = ref(database, 'notifications');
 
+        // Preload notification sound
+        const notificationSound = new Audio('https://raw.githubusercontent.com/AlgoAINEW/algo/main/mixkit-bell-notification-933.wav');
+        notificationSound.preload = 'auto'; // Preload the sound
+
         // Example stock data
         const stocks = [
             { name: 'Apple', high: 150, low: 145 },
@@ -310,13 +314,15 @@
             notificationDiv.innerHTML = `${message}<div class="timestamp">${timestamp}</div>`; // Include timestamp
 
             // Play notification sound
-            const notificationSound = new Audio('https://raw.githubusercontent.com/AlgoAINEW/algo/main/mixkit-bell-notification-933.wav');
-            notificationSound.play();
+            notificationSound.play().catch((error) => {
+                console.log("Sound playback error: ", error.message);  // In case of any playback errors
+            });
 
             // Prepend the new notification to the top
             const notificationsContainer = document.getElementById('notifications');
             notificationsContainer.insertBefore(notificationDiv, notificationsContainer.firstChild);
         });
     </script>
+
 </body>
 </html>
