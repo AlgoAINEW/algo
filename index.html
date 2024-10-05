@@ -223,7 +223,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-        import { getDatabase, ref, push, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
         // Your Firebase configuration
         const firebaseConfig = {
@@ -247,75 +247,100 @@
         // Example stock data
         const stocks = [
             { name: 'Apple', high: 150, low: 145 },
-            { name: 'Google', high: 2800, low: 2700 },
-            { name: 'Amazon', high: 3500, low: 3400 },
-            { name: 'Tesla', high: 700, low: 650 }
+            { name: 'Google', high: 2800, low: 2750 },
+            { name: 'Microsoft', high: 300, low: 290 },
         ];
 
-        // Display stock data
-        const stockData = document.getElementById('stock-data');
+        // Populate stock table
+        const stockDataElement = document.getElementById('stock-data');
         stocks.forEach(stock => {
             const row = document.createElement('tr');
             row.innerHTML = `<td>${stock.name}</td><td>${stock.high}</td><td>${stock.low}</td>`;
-            stockData.appendChild(row);
+            stockDataElement.appendChild(row);
         });
+
+        // Function to add a message to the notification section
+        const addMessage = (message, timestamp) => {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            const timestampElement = document.createElement('div');
+            timestampElement.classList.add('timestamp');
+            timestampElement.textContent = new Date(timestamp).toLocaleTimeString();
+            messageElement.textContent = message;
+            messageElement.appendChild(timestampElement);
+            const notificationsElement = document.getElementById('notifications');
+            notificationsElement.appendChild(messageElement);
+            notificationsElement.scrollTop = notificationsElement.scrollHeight;
+        };
 
         // Login functionality
         const loginButton = document.getElementById('loginButton');
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const clearButton = document.getElementById('clearButton');
+        const loginSection = document.getElementById('login-section');
+        const notificationsElement = document.getElementById('notifications');
 
         loginButton.addEventListener('click', () => {
-            const email = document.getElementById('emailInput').value;
-            const password = document.getElementById('passwordInput').value;
+            const email = emailInput.value;
+            const password = passwordInput.value;
 
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log('User logged in:', user.uid);
+                    // User signed in
+                    loginSection.style.display = 'none';
                     messageInput.style.display = 'block';
                     sendButton.style.display = 'block';
                     clearButton.style.display = 'block';
-                    document.getElementById('login-section').style.display = 'none';
                 })
                 .catch((error) => {
-                    console.error('Login failed:', error.message);
+                    alert('Login failed: ' + error.message);
                 });
         });
 
-        // Send notifications
+        // Send a notification
         sendButton.addEventListener('click', () => {
             const message = messageInput.value;
-            if (message) {
-                push(notificationsRef, { text: message, time: new Date().toLocaleString() });
-                messageInput.value = ''; // Clear input after sending
+            if (message.trim() !== '') {
+                push(notificationsRef, {
+                    message: message,
+                    timestamp: Date.now()
+                });
+                messageInput.value = '';
             }
+        });
+
+        // Listen for new notifications and add them to the page
+        onChildAdded(notificationsRef, (snapshot) => {
+            const data = snapshot.val();
+            addMessage(data.message, data.timestamp);
+            playNotificationSound();
         });
 
         // Clear notifications
         clearButton.addEventListener('click', () => {
-            const notifications = document.querySelectorAll('.message');
-            notifications.forEach(notification => {
-                notification.remove();
-            });
+            notificationsElement.innerHTML = '';
         });
 
-        // Listen for new notifications
-        onChildAdded(notificationsRef, (data) => {
-            const message = data.val().text;
-            const timestamp = data.val().time; // Get the timestamp
-            const notificationDiv = document.createElement('div');
-            notificationDiv.classList.add('message');
-            notificationDiv.innerHTML = `${message}<div class="timestamp">${timestamp}</div>`; // Include timestamp
+        // Preload the sound
+        let audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
 
-            // Play notification sound
-            const notificationSound = new Audio('https://raw.githubusercontent.com/AlgoAINEW/algo/main/mixkit-bell-notification-933.wav');
-            notificationSound.play();
+        // Function to play sound for each new message
+        const playNotificationSound = () => {
+            audio.play().catch(error => {
+                console.error("Audio playback failed: ", error);
+            });
+        };
 
-            // Prepend the new notification to the top
-            const notificationsContainer = document.getElementById('notifications');
-            notificationsContainer.insertBefore(notificationDiv, notificationsContainer.firstChild);
+        // Trigger sound on first user interaction
+        document.body.addEventListener('click', () => {
+            audio.play().then(() => {
+                audio.pause();
+            }).catch(() => {
+                // Sound will play after user interaction
+            });
         });
     </script>
 </body>
